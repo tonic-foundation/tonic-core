@@ -1,0 +1,7 @@
+#!/bin/bash
+receiver=$1
+contract=$2
+amount=$3
+
+near call $contract ft_mint '{"receiver_id":"'$receiver'", "amount": "'$amount'"}' \
+    --accountId "$receiver"

@@ -1,0 +1,16 @@
+[workspace]
+members = [
+    "tonic-dex",
+    "test-token"
+]
+
+[profile.test]
+overflow-checks = true
+
+[profile.release]
+codegen-units = 1
+opt-level = "s"
+lto = true
+debug = false
+panic = "abort"
+overflow-checks = true

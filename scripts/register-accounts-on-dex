@@ -1,0 +1,18 @@
+#!/bin/bash
+near call $TONIC_CONTRACT_ID \
+    storage_deposit \
+    '{"account_id":"'$NEAR_ACCOUNT_ID'","registration_only":true}' \
+    --deposit 0.1 \
+    --accountId $NEAR_ACCOUNT_ID
+
+near call $TONIC_CONTRACT_ID \
+    storage_deposit \
+    '{"account_id":"'$DEV_QUOTE_TOKEN_ID'","registration_only":true}' \
+    --deposit 0.1 \
+    --accountId $NEAR_ACCOUNT_ID
+
+near call $TONIC_CONTRACT_ID \
+    storage_deposit \
+    '{"account_id":"'$DEV_BASE_TOKEN_ID'","registration_only":true}' \
+    --deposit 0.1 \
+    --accountId $NEAR_ACCOUNT_ID

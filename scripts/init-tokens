@@ -1,0 +1,3 @@
+#!/bin/bash
+near call $DEV_QUOTE_TOKEN_ID new '{"decimals": 6, "name": "USD Coin (Tonic)", "symbol": "USDC", "icon": null}' --accountId $NEAR_ACCOUNT_ID
+near call $DEV_BASE_TOKEN_ID new '{"decimals": 8, "name": "Wrapped Bitcoin (Tonic)", "symbol": "WBTC", "icon": null}' --accountId $NEAR_ACCOUNT_ID

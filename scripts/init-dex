@@ -1,0 +1,3 @@
+#!/bin/bash
+near call $TONIC_CONTRACT_ID new '{"owner_id":"'$TONIC_CONTRACT_ID'"}' \
+    --accountId $NEAR_ACCOUNT_ID

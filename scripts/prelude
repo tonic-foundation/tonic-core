@@ -1,0 +1,26 @@
+success() { echo -e "\033[32m[+] $@\033[0m"; }  # [+] green
+info()    { echo -e "\033[34m[+] $@\033[0m"; }  # [+] blue
+warn()    { echo -e "\033[33m[-] $@\033[0m"; }  # [-] yellow
+error()   { echo -e "\033[31m[!] $@\033[0m"; }  # [!] red
+
+require_env() {
+    test -z "${!1}" && { 
+        error "Missing $1 in env" >&2
+        exit 1
+    }
+}
+
+# makes the scripts a little easier to read
+get_env_or_default() {
+    if [ $# -ne 2 ]; then
+        error "require_env_or_default called with 1 arg, expected 2"
+    fi
+    echo "${!1:-$2}"
+}
+
+require_command() {
+    command -v "$1" > /dev/null || {
+        error "Missing $1 command" >&2
+        exit 1
+    }
+}

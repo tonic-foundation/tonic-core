@@ -1,0 +1,14 @@
+#!/bin/bash
+caller=$1
+dex_contract=$2
+base_token=$3
+base_token_lot_size=$4
+quote_token=$5
+quote_token_lot_size=$6
+
+
+near call $dex_contract create_market \
+    '{"args":{"base_token": "ft:'$base_token'", "base_token_lot_size": "'$base_token_lot_size'", "quote_token": "ft:'$quote_token'", "quote_token_lot_size": "'$quote_token_lot_size'", "taker_fee_base_rate": 20, "maker_rebate_base_rate": 0}}' \
+    --accountId $caller \
+    --gas 300000000000000 \
+    --deposit 0.1

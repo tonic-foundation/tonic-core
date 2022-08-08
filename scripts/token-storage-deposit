@@ -1,0 +1,10 @@
+#!/bin/bash
+caller=$1
+contract=$2
+for_account=$3
+
+near call $contract \
+    storage_deposit \
+    '{"account_id": "'$for_account'", "registration_only": true}' \
+    --deposit 0.1 \
+    --accountId $caller
