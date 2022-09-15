@@ -48,7 +48,7 @@ fn get_open_orders() {
     contract.internal_deposit(&user_a.clone(), &(&usdc).into(), 100);
     contract.internal_deposit(&user_b.clone(), &(&usdc).into(), 100);
 
-    set_signer_context(user_a.clone());
+    set_predecessor_context(user_a.clone());
     let PlaceOrderResultView { id: order_id, .. } = contract.new_order(
         market_id.into(),
         NewOrderParams {
@@ -62,7 +62,7 @@ fn get_open_orders() {
         },
     );
 
-    set_signer_context(user_b.clone());
+    set_predecessor_context(user_b.clone());
     contract.new_order(
         market_id.into(),
         NewOrderParams {
@@ -237,7 +237,7 @@ fn test_get_market() {
     // 0.25 NEAR
     contract.internal_deposit(&user_b, &(&wnear).into(), one_base / 4);
 
-    set_signer_context(user_a.clone());
+    set_predecessor_context(user_a.clone());
     // Buy 0.2 NEAR @ 5USD each -> 1 USD total
     contract.new_order(
         market_id.into(),
@@ -301,7 +301,7 @@ fn test_trade() {
     // 0.25 NEAR
     contract.internal_deposit(&user_b, &(&wnear).into(), one_base / 4);
 
-    set_signer_context(user_a.clone());
+    set_predecessor_context(user_a.clone());
     // Buy 0.2 NEAR @ 5USD each -> 1 USD total
     contract.new_order(
         market_id.into(),
@@ -318,7 +318,7 @@ fn test_trade() {
     let balance = get_balance(&contract, &user_a, usdc.clone().into());
     assert_eq!(balance, 9 * one_quote);
 
-    set_signer_context(user_b.clone());
+    set_predecessor_context(user_b.clone());
     // Sell 0.2 NEAR @ 4 USD each
     contract.new_order(
         market_id.into(),
@@ -374,7 +374,7 @@ fn taker_gets_best_buy_price() {
     contract.internal_deposit(&taker, &(&usdc).into(), 10 * one_quote);
 
     // Sell 0.2 NEAR @ 5 USD each -> 1 USD to fill the order
-    set_signer_context(maker.clone());
+    set_predecessor_context(maker.clone());
     contract.new_order(
         market_id.into(),
         new_order_params(
@@ -413,7 +413,7 @@ fn taker_gets_best_buy_price() {
     //
     // Using two maker orders lets us test that the refund is calculated
     // correctly for each matched maker order.
-    set_signer_context(taker.clone());
+    set_predecessor_context(taker.clone());
     contract.new_order(
         market_id.into(),
         new_order_params(
@@ -473,7 +473,7 @@ fn taker_gets_best_sell_price() {
     contract.internal_deposit(&taker, &(&wnear).into(), one_base / 2);
 
     // Buy 0.2 NEAR @ 5 USD each -> should pay 1 USD
-    set_signer_context(maker.clone());
+    set_predecessor_context(maker.clone());
     contract.new_order(
         market_id.into(),
         new_order_params(
@@ -509,7 +509,7 @@ fn taker_gets_best_sell_price() {
     // + 0.2 NEAR @ 6 USD   1.2 USD <- taker gets a better price for second order
     // ----------------------------
     //   Actual proceeds    2.2 USD
-    set_signer_context(taker.clone());
+    set_predecessor_context(taker.clone());
     contract.new_order(
         market_id.into(),
         new_order_params(
@@ -569,7 +569,7 @@ fn test_fill_or_kill() {
     // 0.25 NEAR
     contract.internal_deposit(&user_b, &(&wnear).into(), one_base / 4);
 
-    set_signer_context(user_b.clone());
+    set_predecessor_context(user_b.clone());
     // Sell 0.25 NEAR @ 5USD each -> 1 USD total
     contract.new_order(
         market_id.into(),
@@ -584,7 +584,7 @@ fn test_fill_or_kill() {
         ),
     );
 
-    set_signer_context(user_a.clone());
+    set_predecessor_context(user_a.clone());
     // Sell 0.2 NEAR @ 4 USD each
     let result = contract.new_order(
         market_id.into(),
@@ -650,7 +650,7 @@ fn test_immediate_or_canel() {
     // 0.25 NEAR
     contract.internal_deposit(&user_b, &(&wnear).into(), one_base / 4);
 
-    set_signer_context(user_b.clone());
+    set_predecessor_context(user_b.clone());
     // Sell 0.2 NEAR @ 5USD each -> 1 USD total
     contract.new_order(
         market_id.into(),
@@ -665,7 +665,7 @@ fn test_immediate_or_canel() {
         ),
     );
 
-    set_signer_context(user_a.clone());
+    set_predecessor_context(user_a.clone());
     // Buy 1 NEAR @ 5 USD each
     let result = contract.new_order(
         market_id.into(),
@@ -715,7 +715,7 @@ fn test_cancel_order() {
     contract.internal_deposit(&accounts(1).into(), &(&base_token).into(), 100);
     contract.internal_deposit(&accounts(1).into(), &(&quote_token).into(), 1000);
 
-    set_signer_context(user.clone());
+    set_predecessor_context(user.clone());
     let PlaceOrderResultView { id: order_id, .. } = contract.new_order(
         market_id.into(),
         NewOrderParams {
@@ -765,7 +765,7 @@ fn test_signer_cannot_cancel_other_users_order() {
     storage_deposit(&mut contract, &user_b);
     contract.internal_deposit(&user_a.clone(), &(&usdc).into(), 100);
 
-    set_signer_context(user_a.clone());
+    set_predecessor_context(user_a.clone());
     let PlaceOrderResultView { id: order_id, .. } = contract.new_order(
         market_id.into(),
         NewOrderParams {
@@ -779,7 +779,7 @@ fn test_signer_cannot_cancel_other_users_order() {
         },
     );
 
-    set_signer_context(user_b);
+    set_predecessor_context(user_b);
     contract.cancel_order(market_id.into(), order_id); // should panic
 }
 
@@ -812,7 +812,7 @@ fn test_cancel_all() {
     contract.internal_deposit(&accounts(1).into(), &(&base_token).into(), 100);
     contract.internal_deposit(&accounts(1).into(), &(&quote_token).into(), 1000);
 
-    set_signer_context(user.clone());
+    set_predecessor_context(user.clone());
     contract.new_order(
         market_id.into(),
         NewOrderParams {
@@ -906,7 +906,7 @@ fn test_admin_cancel() {
     contract.internal_deposit(&accounts(1).into(), &(&base_token).into(), 100);
     contract.internal_deposit(&accounts(1).into(), &(&quote_token).into(), 1000);
 
-    set_signer_context(user.clone());
+    set_predecessor_context(user.clone());
     let order = contract.new_order(
         market_id.into(),
         NewOrderParams {
@@ -920,7 +920,7 @@ fn test_admin_cancel() {
         },
     );
 
-    set_signer_context(admin);
+    set_predecessor_context(admin);
     contract.admin_cancel_order(market_id.into(), order.id.into());
     assert_eq!(get_balance(&contract, &user, quote_token.into()), 1000);
     let open_orders = contract.get_open_orders(market_id.into(), user.clone());
@@ -953,7 +953,7 @@ fn test_admin_cancel_all_user_orders() {
     );
 
     for user in [user_a.clone(), user_b.clone()] {
-        set_signer_context(user.clone());
+        set_predecessor_context(user.clone());
         storage_deposit(&mut contract, &user.clone());
         contract.internal_deposit(&user.clone().into(), &(&base_token).into(), 100);
         contract.internal_deposit(&user.into(), &(&quote_token).into(), 1000);
@@ -973,7 +973,7 @@ fn test_admin_cancel_all_user_orders() {
     }
 
     // Admin cancels all user_a's orders & leaves those of user_b.
-    set_signer_context(admin);
+    set_predecessor_context(admin);
     contract.admin_cancel_all_user_orders(market_id.into(), user_a.clone());
     let open_orders = contract.get_open_orders(market_id.into(), user_a.clone());
     assert_eq!(open_orders.len(), 0);
@@ -1008,7 +1008,7 @@ fn test_admin_clear_orderbook() {
     contract.internal_deposit(&accounts(1).into(), &(&base_token).into(), 10000);
     contract.internal_deposit(&accounts(1).into(), &(&quote_token).into(), 100000);
 
-    set_signer_context(user.clone());
+    set_predecessor_context(user.clone());
 
     let num_orders = 10;
     for i in 0..num_orders {
@@ -1026,7 +1026,7 @@ fn test_admin_clear_orderbook() {
         );
     }
 
-    set_signer_context(admin);
+    set_predecessor_context(admin);
     // Clear all but 1 order
     contract.admin_clear_orderbook(market_id.into(), Some((num_orders - 1) as u16));
 
@@ -1151,7 +1151,7 @@ fn test_market_buy() {
     // 3 NEAR
     contract.internal_deposit(&maker, &(&wnear).into(), one_base * 3);
 
-    set_signer_context(maker.clone());
+    set_predecessor_context(maker.clone());
     // Sell 1 NEAR @ 2USD each
     contract.new_order(
         market_id.into(),
@@ -1192,7 +1192,7 @@ fn test_market_buy() {
         ),
     );
 
-    set_signer_context(taker.clone());
+    set_predecessor_context(taker.clone());
     // Market buy 5 USD worth of NEAR + 1 lots, should fill 2 and refund 1 lot
     let result = contract.new_order(
         market_id.into(),
@@ -1241,7 +1241,7 @@ fn test_swap_buy() {
     // 3 NEAR
     contract.internal_deposit(&user_b, &(&wnear).into(), one_base * 3);
 
-    set_signer_context(user_b.clone());
+    set_predecessor_context(user_b.clone());
     // Sell 1 NEAR @ 2USD each
     contract.new_order(
         market_id.into(),
@@ -1284,7 +1284,7 @@ fn test_swap_buy() {
 
     let mut market = contract.internal_unwrap_market(&market_id);
 
-    set_signer_context(user_a.clone());
+    set_predecessor_context(user_a.clone());
     // Market buy 5 USD worth of NEAR + 1 lots, should fill 2 and refund 1 lot
     let result = contract.internal_swap(
         &mut market,
@@ -1336,7 +1336,7 @@ fn test_market_sell() {
     // 10 USD
     contract.internal_deposit(&maker, &(&usdc).into(), 10 * one_quote);
 
-    set_signer_context(maker.clone());
+    set_predecessor_context(maker.clone());
     // Buy 1 NEAR @ 2USD each
     contract.new_order(
         market_id.into(),
@@ -1377,7 +1377,7 @@ fn test_market_sell() {
         ),
     );
 
-    set_signer_context(taker.clone());
+    set_predecessor_context(taker.clone());
     // Market sell 2 NEAR, should output 7 USDC
     let result = contract.new_order(
         market_id.into(),
@@ -1425,7 +1425,7 @@ fn test_swap_sell() {
     // 10 USD
     contract.internal_deposit(&user_b, &(&usdc).into(), 10 * one_quote);
 
-    set_signer_context(user_b.clone());
+    set_predecessor_context(user_b.clone());
     // Buy 1 NEAR @ 2USD each
     contract.new_order(
         market_id.into(),
@@ -1468,7 +1468,7 @@ fn test_swap_sell() {
 
     let mut market = contract.internal_unwrap_market(&market_id);
 
-    set_signer_context(user_a.clone());
+    set_predecessor_context(user_a.clone());
     // Market sell 2 NEAR, should output 7 USDC
     let result = contract.internal_swap(&mut market, Side::Sell, one_base * 2, None);
     assert_eq!(result.output_amount, one_quote * 7);
@@ -1525,7 +1525,7 @@ fn test_batch_operation() {
     contract.internal_deposit(&user_a, &usdc.clone().into(), one_quote * 10);
     contract.internal_deposit(&user_a, &wnear.clone().into(), one_base * 10);
 
-    set_signer_context(user_a.clone());
+    set_predecessor_context(user_a.clone());
     let order = contract.new_order(
         market_id.into(),
         NewOrderParams {
@@ -1594,7 +1594,7 @@ fn test_trading_window_ask() {
     // 10 NEAR
     contract.internal_deposit(&user_a, &(&wnear).into(), one_base * 10);
 
-    set_signer_context(user_a.clone());
+    set_predecessor_context(user_a.clone());
 
     // Bids and asks with an empty orderbook should work at any price
     contract.new_order(
@@ -1674,7 +1674,7 @@ fn test_trading_window_bid() {
     // 10 NEAR
     contract.internal_deposit(&user_a, &(&wnear).into(), one_base * 10);
 
-    set_signer_context(user_a.clone());
+    set_predecessor_context(user_a.clone());
 
     // Bids and asks with an empty orderbook should work at any price
     contract.new_order(

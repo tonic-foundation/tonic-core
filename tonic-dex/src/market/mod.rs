@@ -137,11 +137,11 @@ impl Contract {
             errors::INSUFFICIENT_MARKET_DEPOSIT
         );
         if refund > 0 {
-            Promise::new(env::signer_account_id()).transfer(refund);
+            Promise::new(env::predecessor_account_id()).transfer(refund);
         }
 
         emit_event(EventType::NewMarket(NewMarketEvent {
-            creator_id: env::signer_account_id(),
+            creator_id: env::predecessor_account_id(),
             market_id,
             base_token,
             quote_token,
@@ -188,11 +188,13 @@ impl Contract {
         })
     }
 
-    /// Cancel all orders in a given market owned by the signer account.
+    /// Cancel all orders in a given market owned by the account.
     #[measure_gas(feature = "measure_gas")]
     pub fn cancel_all_orders(&mut self, market_id: MarketId) -> Vec<OrderId> {
+        self.assert_active();
         self.assert_can_cancel();
-        let account_id = env::signer_account_id();
+
+        let account_id = env::predecessor_account_id();
         self.internal_cancel_all_orders(&market_id, account_id)
     }
 
@@ -257,11 +259,11 @@ impl Contract {
         self.internal_clear_orderbook_orders(&market_id, limit)
     }
 
-    /// Cancel signer's order in a market.
+    /// Cancel account's order in a market.
     #[measure_gas(feature = "measure_gas")]
     pub fn cancel_order(&mut self, market_id: MarketId, order_id: OrderId) {
         self.assert_can_cancel();
-        let account_id = env::signer_account_id();
+        let account_id = env::predecessor_account_id();
         self.internal_cancel_order(market_id, account_id, order_id);
     }
 
@@ -276,7 +278,7 @@ impl Contract {
         self.assert_valid_order(&order);
         let mut market = self.internal_unwrap_market(&market_id);
 
-        let taker_account_id = env::signer_account_id();
+        let taker_account_id = env::predecessor_account_id();
         let mut taker_account = self.internal_unwrap_account(&taker_account_id);
 
         let result = if order.order_type == OrderType::Market {
@@ -501,7 +503,7 @@ fn process_refunds(
         _assert_eq!(
             &order.owner_id,
             account.unwrap_id(),
-            "order is not owned by signer"
+            "order is not owned by account"
         );
         let (refund_amount, token) = get_refund_amount(market, &order);
         account.deposit(&token, refund_amount);

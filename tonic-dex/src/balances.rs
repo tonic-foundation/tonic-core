@@ -26,8 +26,10 @@ pub trait TonicExchange {
 impl Contract {
     #[payable]
     pub fn deposit_near(&mut self) {
+        self.assert_active();
+
         let amount = env::attached_deposit();
-        let sender_id = env::signer_account_id();
+        let sender_id = env::predecessor_account_id();
         let mut account = self.internal_unwrap_account(&sender_id);
         account.deposit(&TokenType::NativeNear, amount);
         self.internal_save_account(&sender_id, account);
@@ -35,26 +37,30 @@ impl Contract {
 
     #[payable]
     pub fn withdraw_near(&mut self, amount: U128) {
+        self.assert_active();
         assert_one_yocto();
-        let account_id = env::signer_account_id();
 
+        let account_id = env::predecessor_account_id();
         let token = TokenType::from_key("NEAR");
         self.internal_withdraw(&account_id, &token, amount.into());
     }
 
     #[payable]
     pub fn withdraw_ft(&mut self, token: AccountId, amount: U128) {
+        self.assert_active();
         assert_one_yocto();
-        let account_id = env::signer_account_id();
 
+        let account_id = env::predecessor_account_id();
         let token = TokenType::from_account_id(token);
         self.internal_withdraw(&account_id, &token, amount.into());
     }
 
     #[payable]
     pub fn withdraw_mt(&mut self, mt_account_id: AccountId, token_id: TokenId, amount: U128) {
+        self.assert_active();
         assert_one_yocto();
-        let account_id = env::signer_account_id();
+
+        let account_id = env::predecessor_account_id();
         let key = format!("mft:{}:{}", mt_account_id, token_id);
         let token = TokenType::from_key(&key);
         self.internal_withdraw(&account_id, &token, amount.into());

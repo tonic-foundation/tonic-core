@@ -30,7 +30,7 @@ fn get_order() {
     storage_deposit(&mut contract, &user_a);
     contract.internal_deposit(&user_a.clone(), &(&usdc).into(), 100);
 
-    set_signer_context(user_a.clone());
+    set_predecessor_context(user_a.clone());
     let PlaceOrderResultView { id: order_id, .. } = contract.new_order(
         market_id.into(),
         NewOrderParams {

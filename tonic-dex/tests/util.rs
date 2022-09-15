@@ -193,7 +193,7 @@ pub fn create_market_and_place_orders(
 ) -> Market {
     let market_id = create_and_init_market(contract, market_args, 16, 18);
     for (user, order) in orders.into_iter() {
-        set_signer_context(user.clone());
+        set_predecessor_context(user.clone());
         contract.new_order(market_id.into(), order);
     }
     contract.internal_unwrap_market(&market_id)

@@ -15,7 +15,9 @@ pub struct SwapResult {
 impl Contract {
     #[payable]
     pub fn swap_near(&mut self, swaps: Vec<SwapAction>) -> PromiseOrValue<U128> {
-        let sender_id = env::signer_account_id();
+        self.assert_active();
+
+        let sender_id = env::predecessor_account_id();
         let amount = env::attached_deposit();
         self.execute_swaps(swaps, TokenType::NativeNear, amount, sender_id)
     }

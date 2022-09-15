@@ -14,6 +14,8 @@ impl FungibleTokenReceiver for Contract {
         amount: U128,
         msg: String,
     ) -> PromiseOrValue<U128> {
+        self.assert_active();
+
         let amount: u128 = amount.into();
         let token_id = env::predecessor_account_id();
         let token = TokenType::FungibleToken {
@@ -69,6 +71,8 @@ impl MultiTokenReceiver for Contract {
         amounts: Vec<U128>,
         _msg: String,
     ) -> PromiseOrValue<Vec<U128>> {
+        self.assert_active();
+
         let account_id = env::predecessor_account_id();
         _assert_eq!(
             token_ids.len(),

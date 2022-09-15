@@ -253,4 +253,8 @@ impl Contract {
     pub fn get_owner(&self) -> AccountId {
         self.owner_id.clone()
     }
+
+    pub fn get_contract_state(&self) -> ContractState {
+        self.state.clone()
+    }
 }

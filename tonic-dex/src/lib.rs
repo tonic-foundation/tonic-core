@@ -51,8 +51,10 @@ pub use crate::views::*;
 pub enum ContractState {
     /// Allow all operations
     Active,
+
     /// No operations allowed except admin actions
     Paused,
+
     /// Only allow cancelling existing orders
     CancelOnly,
 }
@@ -106,7 +108,7 @@ impl Contract {
 
     pub fn assert_is_owner(&self) {
         _assert_eq!(
-            env::signer_account_id(),
+            env::predecessor_account_id(),
             self.owner_id,
             "Method can only be called by contract owner ID"
         );

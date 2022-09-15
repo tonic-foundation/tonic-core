@@ -83,13 +83,15 @@ impl StorageManagement for Contract {
         account_id: Option<AccountId>,
         registration_only: Option<bool>,
     ) -> StorageBalance {
+        self.assert_active();
+
         let amount = env::attached_deposit();
-        let account_id = account_id.unwrap_or_else(env::signer_account_id);
+        let account_id = account_id.unwrap_or_else(env::predecessor_account_id);
         let registration_only = registration_only.unwrap_or(false);
 
         let refund = self.internal_storage_deposit(&account_id, registration_only, amount);
         if refund > 0 {
-            Promise::new(env::signer_account_id()).transfer(refund);
+            Promise::new(env::predecessor_account_id()).transfer(refund);
         }
 
         self.internal_unwrap_storage_balance(&account_id)
@@ -97,8 +99,10 @@ impl StorageManagement for Contract {
 
     #[payable]
     fn storage_withdraw(&mut self, amount: Option<U128>) -> StorageBalance {
+        self.assert_active();
+
         assert_one_yocto();
-        let account_id = env::signer_account_id();
+        let account_id = env::predecessor_account_id();
         if let Some(storage_balance) = self.internal_storage_balance_of(&account_id) {
             let amount = amount.unwrap_or(storage_balance.available).0;
             if amount > storage_balance.available.0 {
@@ -121,8 +125,10 @@ impl StorageManagement for Contract {
     /// balances.
     #[payable]
     fn storage_unregister(&mut self, _force: Option<bool>) -> bool {
+        self.assert_active();
+
         assert_one_yocto();
-        let account_id = env::signer_account_id();
+        let account_id = env::predecessor_account_id();
         let account = self.internal_unwrap_account(&account_id);
         if !account.is_empty() {
             env::panic_str("account not empty");
