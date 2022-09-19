@@ -513,6 +513,7 @@ fn process_refunds(
             order_id: order.id(),
             refund_amount: refund_amount.into(),
             refund_token: token,
+            cancelled_qty: market.base_lots_to_native(order.open_qty_lots).into(),
         });
     }
 
