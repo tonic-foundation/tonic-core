@@ -1,10 +1,10 @@
 #!/bin/bash
 caller=$1
-dex_contract=$2
-base_token=$3
-base_token_lot_size=$4
-quote_token=$5
-quote_token_lot_size=$6
+dex_contract=$1
+base_token=$2
+base_token_lot_size=$3
+quote_token=$4
+quote_token_lot_size=$5
 
 
 near call $dex_contract create_market \
