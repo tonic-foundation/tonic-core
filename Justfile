@@ -144,7 +144,7 @@ init-dex:
     near call $TONIC_CONTRACT_ID storage_deposit --deposit 0.1 --accountId $NEAR_ACCOUNT_ID
 
     info Creating default market with dev tokens
-    scripts/create-ft-market $NEAR_ACCOUNT_ID $TONIC_CONTRACT_ID \
+    scripts/create-ft-market $TONIC_CONTRACT_ID \
         $base_token_id \
         $base_token_lot_size \
         $quote_token_id \
