@@ -115,7 +115,9 @@ pub(crate) fn denomination(decimals: u8) -> u128 {
 }
 
 impl Market {
-    /// See [Market] struct for discussion on valid lot sizes
+    /// See [Market] struct for discussion on valid lot sizes.
+    ///
+    /// Called during the `on_ft_metadata` callback.
     pub fn validate_lots_and_decimals(&self) -> bool {
         self.base_token.decimals != INVALID_DECIMALS
             && self.quote_token.decimals != INVALID_DECIMALS

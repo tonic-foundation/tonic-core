@@ -62,15 +62,10 @@ impl Contract {
         )
     }
 
-    pub fn internal_unwrap_or_default_account(&self, account_id: &AccountId) -> AccountV1 {
-        self.internal_get_account(account_id)
-            .unwrap_or_else(|| AccountV1::new(account_id))
-    }
-
-    /// Deposit into an account. This may be used in situations where
-    /// the account isn't already loaded for another use, eg, in the public
-    /// deposit method or the withdraw callback. In most cases, prefer loading
-    /// the account and depositing with `account.deposit` to save gas.
+    /// Deposit into an account. This may be used in situations where the
+    /// account isn't already loaded for another use, eg, in the public deposit
+    /// method or the withdraw callback. In most cases, prefer loading the
+    /// account and depositing with `account.deposit` to save gas.
     pub fn internal_deposit(&mut self, sender_id: &AccountId, token: &TokenType, amount: Balance) {
         let mut account = self.internal_unwrap_account(sender_id);
         account.deposit(token, amount);

@@ -135,7 +135,7 @@ impl Contract {
 
         // Save the taker's newly posted order on their account
         if result.is_posted() {
-            taker_account.save_order_info(
+            taker_account.save_new_order_info(
                 &market.unwrap_id().clone(),
                 result.id,
                 quantity_lots,
@@ -256,7 +256,7 @@ impl Contract {
 
         // Save the taker's newly posted order on their account
         if result.is_posted() {
-            taker_account.save_order_info(
+            taker_account.save_new_order_info(
                 &market.unwrap_id().clone(),
                 result.id,
                 quantity_lots,

@@ -152,22 +152,13 @@ impl AccountV1 {
         0.into()
     }
 
-    /// Return a list of the account's open orders in a market.
-    pub fn get_tracked_order_ids(&self, market_id: &MarketId) -> Vec<OrderId> {
-        if let Some(ids) = self.open_orders.0.get(market_id).cloned() {
-            ids.into_keys().collect()
-        } else {
-            vec![]
-        }
-    }
-
-    /// Save an open order ID on the account. Called when an order is posted,
-    /// used to get a list of an account's open orders.
-    pub fn save_order_info(
+    /// Save order metadata of a newly opened order on the account. Called when
+    /// an order is posted, used to get a list of an account's open orders.
+    pub fn save_new_order_info(
         &mut self,
         market_id: &MarketId,
         order_id: OrderId,
-        original_qty_lots: LotBalance,
+        original_size: LotBalance,
         max_allowed_orders: usize,
     ) {
         let timestamp = env::block_timestamp();
@@ -177,17 +168,18 @@ impl AccountV1 {
                 if orders_in_market.len() >= max_allowed_orders {
                     env::panic_str(errors::EXCEEDED_ORDER_LIMIT);
                 }
-                orders_in_market.insert(order_id, (original_qty_lots, timestamp));
+                orders_in_market.insert(order_id, (original_size, timestamp));
             }
             None => {
                 let mut orders_in_market = HashMap::new();
-                orders_in_market.insert(order_id, (original_qty_lots, timestamp));
+                orders_in_market.insert(order_id, (original_size, timestamp));
                 self.open_orders.0.insert(*market_id, orders_in_market);
             }
         };
     }
 
-    /// Delete all of an account's order IDs for a market.
+    /// Delete all of an account's order IDs for a market. Used whene cancelling
+    /// all orders in a market.
     pub fn remove_all_order_infos(&mut self, market_id: &MarketId) -> Vec<OrderId> {
         if let Some(existing) = self.open_orders.0.remove(market_id) {
             existing.into_keys().collect()
@@ -205,7 +197,6 @@ impl AccountV1 {
         self.open_orders.0.get(market_id)?.get(order_id).cloned()
     }
 
-    /// Delete all of an account's order IDs for a market.
     pub fn remove_order_info(
         &mut self,
         market_id: &MarketId,
