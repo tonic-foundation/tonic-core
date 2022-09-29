@@ -237,13 +237,15 @@ impl Contract {
         self.internal_get_market(id).unwrap()
     }
 
-    pub fn internal_remove_market(&mut self, id: &MarketId) {
-        let market = self.internal_unwrap_market(id);
-        require!(
-            market.state != MarketState::Active,
-            "Cannot delete active market"
-        );
-    }
+    // NB: no longer used; invalid/disabled markets are periodically
+    // swept with admin_delete_market
+    // pub fn internal_remove_market(&mut self, id: &MarketId) {
+    //     let market = self.internal_unwrap_market(id);
+    //     require!(
+    //         market.state != MarketState::Active,
+    //         "Cannot delete active market"
+    //     );
+    // }
 
     /// Panic if lot sizes are not powers of 10.
     fn assert_valid_lot_sizes(&self, base_token_lot_size: u128, quote_token_lot_size: u128) {

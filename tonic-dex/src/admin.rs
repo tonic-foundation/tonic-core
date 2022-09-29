@@ -1,3 +1,8 @@
+/// Implements admin methods. Note that most admin methods bypass status checks,
+/// being able to, eg, force cancel without checking if a market is paused, etc.
+///
+/// Exceptions occur where admin actions could have an impact on user balances
+/// if not checked, like in `admin_delete_market`.
 use tonic_sdk::measure_gas;
 
 use crate::*;
@@ -59,7 +64,10 @@ impl Contract {
     pub fn admin_cancel_order(&mut self, market_id: MarketId, order_id: OrderId) {
         self.assert_is_owner();
         let market = self.internal_unwrap_market(&market_id);
-        let order = market.orderbook.get_order(order_id).unwrap();
+        let order = _expect!(
+            market.orderbook.get_order(order_id),
+            errors::ORDER_NOT_FOUND
+        );
         self.internal_cancel_order(market_id, order.owner_id, order_id);
     }
 

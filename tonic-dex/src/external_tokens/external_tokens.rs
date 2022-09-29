@@ -63,10 +63,16 @@ impl Contract {
             if market.validate_lots_and_decimals() {
                 market.state = MarketState::Active;
             }
+            // Note: because markets will usually be between two fungible
+            // tokens, validate_lots_and_decimals will usually be called more
+            // than once. Validation is expected to fail the first time, since
+            // we're still waiting for info from the second token. For this
+            // reason, we don't remove the market automatically.
             self.internal_save_market(&market_id, market);
         } else {
             debug_log!("Missing metadata for market ID {}", market_id);
-            self.internal_remove_market(&market_id);
+            // invalid markets are periodically swept with admin_delete_market
+            // self.internal_remove_market(&market_id);
         }
     }
 
@@ -99,7 +105,8 @@ impl Contract {
             self.internal_save_market(&market_id, market);
         } else {
             debug_log!("Missing metadata for market ID {}", market_id);
-            self.internal_remove_market(&market_id);
+            // invalid markets are periodically swept with admin_delete_market
+            // self.internal_remove_market(&market_id);
         }
     }
 }

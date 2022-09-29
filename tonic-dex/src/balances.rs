@@ -41,8 +41,7 @@ impl Contract {
         assert_one_yocto();
 
         let account_id = env::predecessor_account_id();
-        let token = TokenType::from_key("NEAR");
-        self.internal_withdraw(&account_id, &token, amount.into());
+        self.internal_withdraw(&account_id, &TokenType::NativeNear, amount.into());
     }
 
     #[payable]
@@ -111,7 +110,7 @@ impl Contract {
         token: &TokenType,
         amount: Balance,
     ) -> Promise {
-        assert!(amount > 0, "Withdraw amount must be positive");
+        _assert!(amount > 0, "Withdraw amount must be positive");
 
         let mut account = self.internal_unwrap_account(account_id);
         account.withdraw(token, amount);
