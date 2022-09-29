@@ -17,6 +17,7 @@ pub use tonic_sdk::prelude::*;
 
 mod account;
 mod actions;
+mod admin;
 mod balances;
 mod external_tokens;
 mod fees;
@@ -31,6 +32,7 @@ mod views;
 
 pub use crate::account::*;
 pub use crate::actions::*;
+pub use crate::admin::*;
 pub use crate::balances::*;
 pub use crate::external_tokens::*;
 pub use crate::external_tokens::*;

@@ -230,6 +230,23 @@ impl Contract {
             .collect()
     }
 
+    pub fn get_order(&self, market_id: MarketId, order_id: OrderId) -> Option<OpenLimitOrderView> {
+        let market = self.internal_unwrap_market(&market_id);
+        let order = market.orderbook.get_order(order_id);
+
+        order.map(|o| {
+            let owner = self.internal_unwrap_account(&o.owner_id);
+            let (original_quantity_lots, ts) = owner.get_order_info(&market_id, &order_id).unwrap();
+            order_to_view(
+                &o,
+                market.base_denomination(),
+                market.quote_denomination(),
+                Some(original_quantity_lots),
+                Some(ts),
+            )
+        })
+    }
+
     pub fn get_balance(&self, account_id: &AccountId, token_id: &AccountId) -> U128 {
         self.internal_unwrap_account(account_id)
             .get_balance(&token_id.into())
