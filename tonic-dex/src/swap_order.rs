@@ -34,12 +34,12 @@ impl Contract {
     ) -> PromiseOrValue<U128> {
         _assert!(!swaps.is_empty(), "At least 1 swap action must be provided");
 
-        let mut amount = input_amount;
-        let mut token = input_token;
         if swaps.last().unwrap().min_output_token.is_none() {
             env::panic_str("Slippage tolerance must be provided");
         }
 
+        let mut amount = input_amount;
+        let mut token = input_token;
         for swap in swaps {
             let result = self.execute_swap_action(swap, token, amount);
             let SwapResult {

@@ -70,6 +70,7 @@ impl Contract {
     #[payable]
     pub fn create_market(&mut self, args: CreateMarketArgs) -> MarketId {
         self.assert_is_owner();
+        // NB: if making this permissionless, need to assert contract active here
 
         _assert!(
             args.maker_rebate_base_rate < args.taker_fee_base_rate
@@ -181,6 +182,7 @@ impl Contract {
         self.assert_active();
         self.assert_valid_order(&order);
         let mut market = self.internal_unwrap_market(&market_id);
+        market.assert_active();
 
         let taker_account_id = env::predecessor_account_id();
         let mut taker_account = self.internal_unwrap_account(&taker_account_id);
@@ -386,7 +388,10 @@ impl Contract {
         let mut account = self.internal_unwrap_account(&account_id);
         match account.remove_order_info(&market_id, order_id) {
             Some(_) => {
-                let order = market.orderbook.cancel_order(order_id).unwrap();
+                let order = _expect!(
+                    market.orderbook.cancel_order(order_id),
+                    errors::ORDER_NOT_FOUND
+                ); // should never happen
                 let cancels = process_refunds(&market, &mut account, vec![order]);
                 self.internal_save_market(&market_id, market);
                 self.internal_save_account(&account_id, account);

@@ -121,11 +121,7 @@ impl Contract {
     }
 
     pub fn assert_active(&self) {
-        _assert_eq!(
-            self.state,
-            ContractState::Active,
-            "Contract must be active to place a trade"
-        );
+        _assert_eq!(self.state, ContractState::Active, "Contract is not active");
     }
 
     pub fn assert_can_cancel(&self) {
