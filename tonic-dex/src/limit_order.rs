@@ -235,7 +235,7 @@ impl Contract {
         // Accrue net taker fee to the market
         _assert!(
             total_taker_fee >= referrer_rebate + total_maker_rebate,
-            "bid accounting bug: over-counted fees"
+            "ask accounting bug: over-counted fees"
         );
         market.incr_fees_accrued(total_taker_fee - total_maker_rebate - referrer_rebate);
 
@@ -252,6 +252,7 @@ impl Contract {
         // Debit base sold and base locked in order
         let base_locked = market.base_lots_to_native(result.open_qty_lots);
         let total_base_debit = base_traded + base_locked;
+        _assert!(total_base_debit <= max_base_debit, "ask bug: oversold");
         taker_account.withdraw(&market.base_token.token_type, total_base_debit);
 
         // Save the taker's newly posted order on their account
