@@ -67,7 +67,7 @@ impl Contract {
         );
         _assert!(
             total_taker_fee >= referrer_rebate + total_maker_rebate,
-            "bid accounting bug: over-counted fees"
+            "accounting bug: over-counted fees"
         );
 
         // Settle taker balance changes due to trades
@@ -86,8 +86,8 @@ impl Contract {
             ),
         };
         let input_debit = match side {
-            Side::Sell => base_traded,
             Side::Buy => quote_traded + total_taker_fee,
+            Side::Sell => base_traded,
         };
         let output_credit = match side {
             Side::Buy => base_traded,
