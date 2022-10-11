@@ -425,6 +425,7 @@ fn process_refunds(
             refund_amount: refund_amount.into(),
             refund_token: token,
             cancelled_qty: market.base_lots_to_native(order.open_qty_lots).into(),
+            price_rank: (*order.unwrap_price_rank() as u128).into(),
         });
     }
 

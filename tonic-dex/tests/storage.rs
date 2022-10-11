@@ -57,6 +57,7 @@ fn storage_measurement_cleanup() {
                 owner_id: account_id.clone(),
                 sequence_number: 1,
                 side: Side::Buy.into(),
+                price_rank: OnceCell::new(), // doesn't matter
             });
             contract.internal_save_market(&market_id, market);
         });

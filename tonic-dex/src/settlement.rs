@@ -75,6 +75,7 @@ impl Contract {
                 side,
                 taker_account_id: taker_account_id.clone(),
                 maker_account_id: fill.maker_user_id.clone(),
+                maker_price_rank: (fill.maker_order_price_rank as u128).into(),
             });
         }
 

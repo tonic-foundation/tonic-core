@@ -110,6 +110,7 @@ impl Contract {
             market_id: *market.unwrap_id(),
             order_id: result.id,
             limit_price: 0.into(),
+            price_rank: None,
             quantity,
             side,
             order_type,
