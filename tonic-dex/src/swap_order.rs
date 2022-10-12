@@ -170,6 +170,7 @@ impl Contract {
             referrer_id,
             referrer_rebate: referrer_rebate.into(),
             is_swap: true,
+            client_id: None,
         }));
 
         SwapResult {

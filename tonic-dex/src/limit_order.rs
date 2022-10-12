@@ -148,7 +148,7 @@ impl Contract {
             market_id: *market.unwrap_id(),
             order_id: result.id,
             limit_price: limit_price.into(),
-            price_rank: result.price_rank.map(|r| (r as u128).into()),
+            price_rank: result.price_rank,
             quantity,
             side,
             order_type,
@@ -156,6 +156,7 @@ impl Contract {
             referrer_id,
             referrer_rebate: referrer_rebate.into(),
             is_swap: false,
+            client_id: params.client_id,
         }));
 
         result
@@ -271,7 +272,7 @@ impl Contract {
             market_id: *market.unwrap_id(),
             order_id: result.id,
             limit_price: limit_price.into(),
-            price_rank: result.price_rank.map(|r| (r as u128).into()),
+            price_rank: result.price_rank,
             quantity,
             side,
             order_type,
@@ -279,6 +280,7 @@ impl Contract {
             referrer_id,
             referrer_rebate: referrer_rebate.into(),
             is_swap: false,
+            client_id: params.client_id,
         }));
 
         result

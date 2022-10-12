@@ -118,6 +118,7 @@ impl Contract {
             referrer_id,
             referrer_rebate: referrer_rebate.into(),
             is_swap: false,
+            client_id: params.client_id,
         }));
 
         result
