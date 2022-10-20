@@ -61,6 +61,7 @@ impl Market {
                 self.quote_token.lot_size,
                 false,
                 false,
+                false,
             ),
             maker_rebate_base_rate: self.maker_rebate_base_rate,
             taker_fee_base_rate: self.taker_fee_base_rate,
@@ -125,6 +126,9 @@ pub struct L2OpenLimitOrderView {
 
     #[serde(skip_serializing_if = "Option::is_none")]
     pub order_id: Option<OrderId>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub client_id: Option<u32>,
 }
 
 pub fn order_to_l2_view(
@@ -133,6 +137,7 @@ pub fn order_to_l2_view(
     quote_lot_size: u128,
     show_owner: bool,
     show_order_id: bool,
+    show_client_id: bool,
 ) -> L2OpenLimitOrderView {
     L2OpenLimitOrderView {
         limit_price: (*order.unwrap_price() as u128 * quote_lot_size).into(),
@@ -144,6 +149,11 @@ pub fn order_to_l2_view(
         },
         order_id: if show_order_id {
             Some(order.id())
+        } else {
+            None
+        },
+        client_id: if show_client_id {
+            order.client_id
         } else {
             None
         },
@@ -164,6 +174,7 @@ pub fn orderbook_to_view(
     quote_lot_size: u128,
     show_owner: bool,
     show_order_id: bool,
+    show_client_id: bool,
 ) -> OrderbookView {
     OrderbookView {
         bids: ob
@@ -171,14 +182,32 @@ pub fn orderbook_to_view(
             .take_depth(price_depth as usize)
             .iter()
             .flat_map(|(_, o)| o.iter())
-            .map(|o| order_to_l2_view(o, base_lot_size, quote_lot_size, show_owner, show_order_id))
+            .map(|o| {
+                order_to_l2_view(
+                    o,
+                    base_lot_size,
+                    quote_lot_size,
+                    show_owner,
+                    show_order_id,
+                    show_client_id,
+                )
+            })
             .collect::<Vec<L2OpenLimitOrderView>>(),
         asks: ob
             .asks
             .take_depth(price_depth as usize)
             .iter()
             .flat_map(|(_, o)| o.iter())
-            .map(|o| order_to_l2_view(o, base_lot_size, quote_lot_size, show_owner, show_order_id))
+            .map(|o| {
+                order_to_l2_view(
+                    o,
+                    base_lot_size,
+                    quote_lot_size,
+                    show_owner,
+                    show_order_id,
+                    show_client_id,
+                )
+            })
             .collect::<Vec<L2OpenLimitOrderView>>(),
     }
 }
@@ -196,6 +225,7 @@ impl Contract {
         depth: u8,
         show_owner: Option<bool>,
         show_order_id: Option<bool>,
+        show_client_id: Option<bool>,
     ) -> Option<OrderbookView> {
         self.internal_get_market(&market_id).map(|m| {
             orderbook_to_view(
@@ -205,6 +235,7 @@ impl Contract {
                 m.quote_token.lot_size,
                 show_owner.unwrap_or(false),
                 show_order_id.unwrap_or(false),
+                show_client_id.unwrap_or(false),
             )
         })
     }
