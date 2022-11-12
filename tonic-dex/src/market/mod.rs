@@ -1,5 +1,4 @@
 use near_sdk::borsh::{self, BorshDeserialize, BorshSerialize};
-use once_cell::unsync::OnceCell;
 
 use tonic_sdk::measure_gas;
 
@@ -110,7 +109,7 @@ impl Contract {
             self.internal_save_market(
                 &market_id,
                 Market {
-                    id: OnceCell::new(),
+                    id: None,
                     base_token: Token {
                         token_type: base_token.clone(),
                         lot_size: args.base_token_lot_size.0,
@@ -413,19 +412,19 @@ fn process_refunds(
     for order in orders {
         _assert_eq!(
             &order.owner_id,
-            account.unwrap_id(),
+            &account.unwrap_id(),
             "order is not owned by account"
         );
         let (refund_amount, token) = get_refund_amount(market, &order);
         account.deposit(&token, refund_amount);
-        account.remove_order_info(market.unwrap_id(), order.id());
+        account.remove_order_info(&market.unwrap_id(), order.id());
 
         cancels.push(CancelEventData {
             order_id: order.id(),
             refund_amount: refund_amount.into(),
             refund_token: token,
             cancelled_qty: market.base_lots_to_native(order.open_qty_lots).into(),
-            price_rank: *order.unwrap_price_rank(),
+            price_rank: order.unwrap_price_rank(),
         });
     }
 
@@ -439,7 +438,7 @@ fn get_refund_amount(market: &Market, order: &OpenLimitOrder) -> (Balance, Token
             let base_denomination = market.base_denomination();
             let refund_amount = ({
                 U256::from(order.open_qty_lots)
-                    * U256::from(*order.unwrap_price())
+                    * U256::from(order.unwrap_price())
                     * U256::from(market.quote_token.lot_size)
                     * U256::from(market.base_token.lot_size)
                     / U256::from(base_denomination)

@@ -43,7 +43,7 @@ impl Contract {
         if let Some(best_bid) = market.best_bid() {
             let limit_price = params.limit_price.unwrap().0;
             require!(
-                (limit_price * 10_000) / market.quote_lots_to_native(*best_bid.unwrap_price())
+                (limit_price * 10_000) / market.quote_lots_to_native(best_bid.unwrap_price())
                     >= market.minimum_bid_bps.into(),
                 "Bid outside of market trading window"
             );
@@ -145,7 +145,7 @@ impl Contract {
 
         emit_event(EventType::Order(NewOrderEvent {
             account_id: taker_account_id.clone(),
-            market_id: *market.unwrap_id(),
+            market_id: market.unwrap_id(),
             order_id: result.id,
             limit_price: limit_price.into(),
             price_rank: result.price_rank,
@@ -177,7 +177,7 @@ impl Contract {
         if let Some(best_ask) = market.best_ask() {
             let limit_price = params.limit_price.unwrap().0;
             require!(
-                (limit_price * 10_000) / market.quote_lots_to_native(*best_ask.unwrap_price())
+                (limit_price * 10_000) / market.quote_lots_to_native(best_ask.unwrap_price())
                     <= market.maximum_ask_bps.into(),
                 "Ask outside of market trading window"
             );
@@ -269,7 +269,7 @@ impl Contract {
 
         emit_event(EventType::Order(NewOrderEvent {
             account_id: taker_account_id.clone(),
-            market_id: *market.unwrap_id(),
+            market_id: market.unwrap_id(),
             order_id: result.id,
             limit_price: limit_price.into(),
             price_rank: result.price_rank,

@@ -1,6 +1,5 @@
 mod util;
 use near_sdk::AccountId;
-use once_cell::unsync::OnceCell;
 use tonic_dex::*;
 use util::*;
 
@@ -21,7 +20,7 @@ fn storage_measurement_cleanup() {
         contract.internal_save_market(
             &market_id,
             Market {
-                id: OnceCell::new(),
+                id: None,
                 base_token: Token {
                     token_type: base_token_id.clone().into(),
                     lot_size: 1,
@@ -57,7 +56,7 @@ fn storage_measurement_cleanup() {
                 owner_id: account_id.clone(),
                 sequence_number: 1,
                 side: Side::Buy.into(),
-                price_rank: OnceCell::new(), // doesn't matter
+                price_rank: None, // doesn't matter
             });
             contract.internal_save_market(&market_id, market);
         });

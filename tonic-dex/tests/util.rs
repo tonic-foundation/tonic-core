@@ -222,7 +222,7 @@ pub fn new_order_params(
 pub fn cancel_all_orders(contract: &mut Contract, market: &Market) {
     for account_id in accounts_list() {
         if let Ok(_) = panic::catch_unwind(|| contract.get_balances(&account_id)) {
-            contract.internal_cancel_all_orders(market.unwrap_id(), account_id);
+            contract.internal_cancel_all_orders(&market.unwrap_id(), account_id);
         }
     }
 }

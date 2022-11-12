@@ -4,7 +4,6 @@ use near_sdk::{
     borsh::{self, BorshDeserialize, BorshSerialize},
     Timestamp,
 };
-use once_cell::unsync::OnceCell;
 use tonic_sdk::borsh_size::{self, BorshSize};
 
 use crate::*;
@@ -14,7 +13,7 @@ pub struct AccountV1 {
     /// ID of this account, initialized at runtime after loading from trie for
     /// convenience. Not directly serialized to trie.
     #[borsh_skip]
-    pub id: OnceCell<AccountId>,
+    pub id: Option<AccountId>,
 
     /// Amounts of tokens and native NEAR deposited to this account.
     balances: TokenBalancesMap,
@@ -28,7 +27,7 @@ pub struct AccountV1 {
 }
 
 impl AccountV1 {
-    impl_lazy_accessors!(id, unwrap_id, initialize_id, AccountId);
+    impl_lazy_accessors_clone!(id, unwrap_id, initialize_id, AccountId);
 }
 
 #[derive(BorshSerialize, BorshDeserialize)]
@@ -101,7 +100,7 @@ impl BorshSize for AccountV1 {
 impl AccountV1 {
     pub fn new(_account_id: &AccountId) -> Self {
         AccountV1 {
-            id: OnceCell::from(_account_id.clone()),
+            id: Some(_account_id.clone()),
             balances: TokenBalancesMap(HashMap::new()),
             open_orders: OpenOrdersMap(HashMap::new()),
             storage_balance: 0,

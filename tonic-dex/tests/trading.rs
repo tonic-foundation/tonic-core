@@ -1753,7 +1753,7 @@ fn self_trade_should_panic() {
     contract.internal_deposit(&user_b, &wnear.clone().into(), one_base * 10);
     // buy 1 BASE @ 1 QUOTE
     let res1 = contract.new_order(
-        *market.unwrap_id(),
+        market.unwrap_id(),
         NewOrderParams {
             limit_price: Some(U128::from(one_quote)),
             max_spend: None,
@@ -1766,7 +1766,7 @@ fn self_trade_should_panic() {
     );
     // self trade 1 BASE @ 1 QUOTE, should cause the whole resting order to be cancelled
     contract.new_order(
-        *market.unwrap_id(),
+        market.unwrap_id(),
         NewOrderParams {
             limit_price: Some(U128::from(one_quote)),
             max_spend: None,
