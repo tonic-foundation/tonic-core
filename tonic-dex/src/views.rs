@@ -51,7 +51,7 @@ impl Market {
 
     pub fn to_view(&self, price_depth: u8, show_total: bool) -> MarketView {
         MarketView {
-            id: *self.unwrap_id(),
+            id: self.unwrap_id(),
             base_token: self.base_token.clone().into(),
             quote_token: self.quote_token.clone().into(),
             orderbook: orderbook_to_view(
@@ -106,11 +106,11 @@ pub fn order_to_view(
     let original_qty = original_qty_lots.map(|q| U128::from(q as u128 * base_lot_size));
     OpenLimitOrderView {
         id: order.id(),
-        limit_price: (*order.unwrap_price() as u128 * quote_lot_size).into(),
+        limit_price: (order.unwrap_price() as u128 * quote_lot_size).into(),
         open_qty: (order.open_qty_lots as u128 * base_lot_size).into(),
         original_qty,
         timestamp: timestamp.map(|t| t.into()),
-        side: *order.unwrap_side(),
+        side: order.unwrap_side(),
         client_id: order.client_id,
     }
 }
@@ -140,7 +140,7 @@ pub fn order_to_l2_view(
     show_client_id: bool,
 ) -> L2OpenLimitOrderView {
     L2OpenLimitOrderView {
-        limit_price: (*order.unwrap_price() as u128 * quote_lot_size).into(),
+        limit_price: (order.unwrap_price() as u128 * quote_lot_size).into(),
         open_quantity: (order.open_qty_lots as u128 * base_lot_size).into(),
         owner: if show_owner {
             Some(order.owner_id.clone())

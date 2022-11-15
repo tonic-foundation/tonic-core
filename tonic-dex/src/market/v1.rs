@@ -1,8 +1,6 @@
 use near_sdk::borsh::{self, BorshDeserialize, BorshSerialize};
 use near_sdk::serde::{Deserialize, Serialize};
 
-use once_cell::unsync::OnceCell;
-
 use crate::*;
 
 #[derive(
@@ -47,7 +45,7 @@ pub struct Market {
     /// ID of this market, initialized at runtime after loading from trie for
     /// convenience. Not directly serialized to trie.
     #[borsh_skip]
-    pub id: OnceCell<MarketId>,
+    pub id: Option<MarketId>,
 
     pub state: MarketState,
     pub base_token: Token,

@@ -105,7 +105,7 @@ fn test_stress() {
     println!(
         "{:?}",
         contract
-            .get_orderbook(market_id.into(), 10, None, None)
+            .get_orderbook(market_id.into(), 10, None, None, None)
             .unwrap()
     );
 }

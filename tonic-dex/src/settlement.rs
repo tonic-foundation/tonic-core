@@ -45,7 +45,7 @@ impl Contract {
 
             let mut maker_account = self.internal_unwrap_account(&fill.maker_user_id);
             if fill.did_remove_maker_order() {
-                maker_account.remove_order_info(market.unwrap_id(), fill.maker_order_id);
+                maker_account.remove_order_info(&market.unwrap_id(), fill.maker_order_id);
             }
 
             let fee_calculator = FeeCalculator::new(&maker_account, market);
@@ -81,7 +81,7 @@ impl Contract {
 
         emit_event(EventType::Fill(NewFillEvent {
             fills,
-            market_id: *market.unwrap_id(),
+            market_id: market.unwrap_id(),
             order_id,
         }));
 

@@ -159,7 +159,7 @@ impl Contract {
 
         emit_event(EventType::Order(NewOrderEvent {
             account_id: taker_account_id.clone(),
-            market_id: *market.unwrap_id(),
+            market_id: market.unwrap_id(),
             price_rank: None,
             order_id: result.id,
             limit_price: 0.into(),

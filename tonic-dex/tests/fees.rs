@@ -340,7 +340,7 @@ fn referrer_fee_storage() {
 
     // since referrer fee didn't get deposited to referrer, check that it
     // accrued to the contract instead
-    let market = contract.internal_get_market(m.unwrap_id()).unwrap();
+    let market = contract.internal_get_market(&m.unwrap_id()).unwrap();
 
     // traded 1 BASE @ 1 QUOTE with a 10 bps taker fee, 5 bps maker rebate, no
     // referrer rebate due to insufficient storage balance.
