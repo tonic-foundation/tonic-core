@@ -6,11 +6,10 @@ use std::string::ToString;
 
 use crate::*;
 
-pub const GAS_FOR_RESOLVE_TRANSFER: Gas = Gas(5_000_000_000_000); // 5 TGas
-/// 25m + gas for resolve transfer
-// pub const GAS_FOR_FT_TRANSFER_CALL: Gas = Gas(45_000_000_000_000);
-/// Amount of gas for fungible token transfers, increased to 20T to support AS token contracts.
-pub const GAS_FOR_FT_TRANSFER: Gas = Gas(20_000_000_000_000); // 20 TGas
+/// 5 TGas
+pub const GAS_FOR_RESOLVE_TRANSFER: Gas = Gas(5_000_000_000_000);
+/// 10 TGas
+pub const GAS_FOR_FT_TRANSFER: Gas = Gas(10_000_000_000_000);
 
 #[ext_contract(ext_self)]
 pub trait TonicExchange {
