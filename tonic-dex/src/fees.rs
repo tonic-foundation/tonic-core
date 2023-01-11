@@ -75,5 +75,5 @@ impl FeeCalculator {
 }
 
 pub fn referrer_rebate(taker_fee: u128) -> u128 {
-    taker_fee / 5
+    taker_fee
 }
