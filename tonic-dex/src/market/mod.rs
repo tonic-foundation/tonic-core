@@ -69,7 +69,6 @@ impl Contract {
     #[payable]
     pub fn create_market(&mut self, args: CreateMarketArgs) -> MarketId {
         self.assert_active();
-        // NB: if making this permissionless, need to assert contract active here
 
         _assert!(
             args.maker_rebate_base_rate < args.taker_fee_base_rate
