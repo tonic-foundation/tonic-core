@@ -68,7 +68,7 @@ impl Contract {
     /// for markets cannot be recovered.
     #[payable]
     pub fn create_market(&mut self, args: CreateMarketArgs) -> MarketId {
-        self.assert_is_owner();
+        self.assert_active();
         // NB: if making this permissionless, need to assert contract active here
 
         _assert!(
