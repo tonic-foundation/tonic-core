@@ -15,7 +15,7 @@ serde_json = "1.0"
 num_enum = "0.5.6"
 sha3 = "^0.10.0"
 
-tonic-sdk = { git = "https://github.com/tonic-foundation/tonic-sdk-rs.git", rev = "8fd832df9ad1d0b50c53b5baaa64479cb8a3e92e" }
+tonic-sdk = { git = "https://github.com/tonic-foundation/tonic-sdk-rs.git", rev = "312694a5fefc75d1e002f7573559bec95a397746" }
 # tonic-sdk = { path = "../../tonic-sdk-rs" }
 
 [dev-dependencies]
