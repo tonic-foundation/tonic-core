@@ -147,6 +147,7 @@ impl Contract {
             account_id: taker_account_id.clone(),
             market_id: market.unwrap_id(),
             order_id: result.id,
+            open_quantity: Some(U128::from(market.base_lots_to_native(result.open_qty_lots))),
             limit_price: limit_price.into(),
             price_rank: result.price_rank,
             quantity,
@@ -157,6 +158,12 @@ impl Contract {
             referrer_rebate: referrer_rebate.into(),
             is_swap: false,
             client_id: params.client_id,
+            best_bid: result
+                .best_bid
+                .map(|p| U128::from(market.quote_lots_to_native(p))),
+            best_ask: result
+                .best_ask
+                .map(|p| U128::from(market.quote_lots_to_native(p))),
         }));
 
         result
@@ -271,6 +278,7 @@ impl Contract {
             account_id: taker_account_id.clone(),
             market_id: market.unwrap_id(),
             order_id: result.id,
+            open_quantity: Some(U128::from(market.base_lots_to_native(result.open_qty_lots))),
             limit_price: limit_price.into(),
             price_rank: result.price_rank,
             quantity,
@@ -281,6 +289,12 @@ impl Contract {
             referrer_rebate: referrer_rebate.into(),
             is_swap: false,
             client_id: params.client_id,
+            best_bid: result
+                .best_bid
+                .map(|p| U128::from(market.quote_lots_to_native(p))),
+            best_ask: result
+                .best_ask
+                .map(|p| U128::from(market.quote_lots_to_native(p))),
         }));
 
         result

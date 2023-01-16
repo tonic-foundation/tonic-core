@@ -162,6 +162,7 @@ impl Contract {
             market_id: market.unwrap_id(),
             price_rank: None,
             order_id: result.id,
+            open_quantity: Some(0.into()),
             limit_price: 0.into(),
             quantity: quantity.into(),
             side,
@@ -171,6 +172,12 @@ impl Contract {
             referrer_rebate: referrer_rebate.into(),
             is_swap: true,
             client_id: None,
+            best_bid: result
+                .best_bid
+                .map(|p| U128::from(market.quote_lots_to_native(p))),
+            best_ask: result
+                .best_ask
+                .map(|p| U128::from(market.quote_lots_to_native(p))),
         }));
 
         SwapResult {
