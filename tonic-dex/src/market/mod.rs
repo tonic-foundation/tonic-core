@@ -1,6 +1,6 @@
 use near_sdk::borsh::{self, BorshDeserialize, BorshSerialize};
 
-use tonic_sdk::measure_gas;
+use tonic_sdk::{measure_gas, orderbook::CancelOrderResult};
 
 use crate::*;
 
@@ -404,11 +404,17 @@ impl Contract {
 fn process_refunds(
     market: &Market,
     account: &mut AccountV1,
-    orders: Vec<OpenLimitOrder>,
+    pending: Vec<CancelOrderResult>,
 ) -> Vec<CancelEventData> {
     let mut cancels: Vec<CancelEventData> = vec![];
 
-    for order in orders {
+    for cancel in pending {
+        let CancelOrderResult {
+            best_bid,
+            best_ask,
+            order,
+        } = cancel;
+
         _assert_eq!(
             &order.owner_id,
             &account.unwrap_id(),
@@ -424,6 +430,8 @@ fn process_refunds(
             refund_token: token,
             cancelled_qty: market.base_lots_to_native(order.open_qty_lots).into(),
             price_rank: order.unwrap_price_rank(),
+            best_bid: best_bid.map(|p| U128::from(market.quote_lots_to_native(p))),
+            best_ask: best_ask.map(|p| U128::from(market.quote_lots_to_native(p))),
         });
     }
 
