@@ -9,6 +9,11 @@ use crate::*;
 
 #[near_bindgen]
 impl Contract {
+    pub fn set_owner(&mut self, account_id: AccountId) {
+        self.assert_is_owner();
+        self.owner_id = account_id;
+    }
+
     pub fn set_market_state(&mut self, market_id: MarketId, new_state: MarketState) {
         self.assert_is_owner();
         let mut market = self.internal_unwrap_market(&market_id);
