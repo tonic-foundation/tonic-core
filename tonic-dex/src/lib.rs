@@ -28,6 +28,7 @@ mod settlement;
 mod storage;
 mod storage_manager;
 mod swap_order;
+mod upgrade;
 mod views;
 
 pub use crate::account::*;
